@@ -9,6 +9,7 @@ open class TKTransitionSubmitButton : UIButton, UIViewControllerTransitioningDel
         self.layer.addSublayer(s)
         return s
     }()
+    private var finished: Bool = false
     
     @IBInspectable
     open var spinnerColor: UIColor = UIColor.white {
@@ -94,6 +95,7 @@ open class TKTransitionSubmitButton : UIButton, UIViewControllerTransitioningDel
     }
     
     open func startLoadingAnimation() {
+        self.finished = false
         self.cachedTitle = title(for: UIControlState())
         self.setTitle("", for: UIControlState())
         UIView.animate(withDuration: 0.1, animations: { () -> Void in
@@ -101,6 +103,7 @@ open class TKTransitionSubmitButton : UIButton, UIViewControllerTransitioningDel
         }, completion: { (done) -> Void in
             self.shrink()
             _ = Timer.schedule(delay: self.shrinkDuration - 0.25) { _ in
+                guard !self.finished else { return }
                 self.spiner.animation()
             }
         })
@@ -108,6 +111,7 @@ open class TKTransitionSubmitButton : UIButton, UIViewControllerTransitioningDel
     
     open func stopLoadingAnimation(_ delay: TimeInterval, beExpand: Bool = false, completion:(()->())?) {
         _ = Timer.schedule(delay: delay) { _ in
+            self.finished = true
             self.didEndFinishAnimation = completion
             if beExpand { self.expand() } else { self.reset() }
             self.spiner.stopAnimation()
@@ -174,7 +178,7 @@ open class TKTransitionSubmitButton : UIButton, UIViewControllerTransitioningDel
         shrinkAnim.timingFunction = shrinkCurve
         shrinkAnim.fillMode = kCAFillModeForwards
         shrinkAnim.isRemovedOnCompletion = false
-        CATransaction.setCompletionBlock { 
+        CATransaction.setCompletionBlock {
             self.setOriginalState()
             self.didEndFinishAnimation?()
         }
