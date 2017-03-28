@@ -109,9 +109,8 @@ open class TKTransitionSubmitButton : UIButton, UIViewControllerTransitioningDel
     open func stopLoadingAnimation(_ delay: TimeInterval, beExpand: Bool = false, completion:(()->())?) {
         _ = Timer.schedule(delay: delay) { _ in
             self.didEndFinishAnimation = completion
+            if beExpand { self.expand() } else { self.reset() }
             self.spiner.stopAnimation()
-            self.reset()
-            if beExpand { self.expand() }
         }
     }
     

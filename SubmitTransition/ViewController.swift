@@ -28,7 +28,7 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate {
         button.startLoadingAnimation()
         
         // Has some trouble
-        button.stopLoadingAnimation(2.0, beExpand: false) {
+        button.stopLoadingAnimation(0.2, beExpand: true) {
             print("Login fail")
         }
     }
